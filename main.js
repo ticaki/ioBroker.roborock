@@ -206,9 +206,9 @@ class Roborock extends utils.Adapter {
 			setInterval(this.updateDataMinimumData.bind(this), this.config.updateInterval * 1000, duid, vacuums[duid]);
 
 			// get map x seconds. Maybe I find a way later on to only update every second if the robot is running.
-			setInterval(function () {
-				vacuums[duid].getMap(duid);
-			}, 2000);
+			// setInterval(function () {
+			// 	vacuums[duid].getMap(duid);
+			// }, 2000);
 
 			// sub to all commands of this robot
 			this.subscribeStates("Devices." + duid + ".commands.*");
@@ -249,7 +249,7 @@ class Roborock extends utils.Adapter {
 
 		vacuum.getParameter(duid, "get_room_mapping");
 
-		vacuum.getMap(duid);
+		// vacuum.getMap(duid);
 	}
 
 	/**
