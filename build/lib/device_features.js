@@ -166,6 +166,7 @@ const actions = {
             type: "json",
             def: '{\"fan_power\":110,\"mop_mode\":306,\"type\":0,\"water_box_mode\":209}',
             states: {
+                '{\"fan_power\":102,\"mop_mode\":300,\"repeat\":1,\"type\":1,\"water_box_mode\":200}': "Vacuum",
                 '{\"fan_power\":102,\"mop_mode\":300,\"repeat\":1,\"type\":1,\"water_box_mode\":201}': "Mop and vacuum",
                 '{\"fan_power\":110,\"mop_mode\":306,\"type\":0,\"water_box_mode\":209}': "Smart mode",
             },
@@ -597,7 +598,7 @@ class device_features {
                 // Roborock QV 35A
                 "roborock.vacuum.a168": [],
                 // Qrevo Curv S5X
-                "roborock.vacuum.a159": []
+                "roborock.vacuum.a159": ["addSmartModeCommand"]
             };
             // process modelConfig
             const configActions = modelConfig[robotModel];
