@@ -260,6 +260,8 @@ export class DeviceManager {
 
 	/** Starts polling. updateInterval (UI) drives everything except TCP; TCP keepalive is fixed 30s. */
 	public startPolling(): void {
+		// Poll local consumables every N seconds (independent of the main updateInterval).
+		const CONSUMABLE_POLL_SECONDS = 15;
 		const mainPollInterval = this.adapter.config.updateInterval; // e.g. 60s
 
 		this.adapter.rLog("System", null, "Info", undefined, undefined, `Starting main poll (every ${mainPollInterval}s). Heavy data updates only after activity finishes.`, "info");
@@ -288,6 +290,16 @@ export class DeviceManager {
 
 				const handler = this.deviceFeatureHandlers.get(duid);
 				if (!handler) continue;
+
+				// Refresh local consumable counters (work_time / sensor_dirty_time) on a faster cadence
+				// than the main poll so manual maintenance resets in the app become visible within seconds
+				// without an adapter restart. Local request, only to online devices, skipped while a heavier
+				// poll for this device is already running; failures are tolerated.
+				if (device.online && !this.pollingDevices.has(duid) && mainUpdateCount % CONSUMABLE_POLL_SECONDS === 0) {
+					await handler
+						.updateConsumables()
+						.catch((e: unknown) => this.adapter.catchError(e, "consumablePoll", duid));
+				}
 
 				const lastState = this.lastStateCode.get(duid) || 0;
 				const isActive = this.isActiveState(lastState);
